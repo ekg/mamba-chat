@@ -8,8 +8,14 @@ from trainer.mamba_trainer import MambaTrainer
 
 
 def run(args):
-        
-    model = MambaLMHeadModel.from_pretrained(args.model, dtype=torch.bfloat16, device="cuda")
+
+    # Set the specified GPU device
+    torch.cuda.set_device(args.gpu)
+    device = torch.device(f"cuda:{args.gpu}" if torch.cuda.is_available() else "cpu")
+
+    model = MambaLMHeadModel.from_pretrained(args.model, dtype=torch.bfloat16, device=device)
+
+    model.to(device)
 
     tokenizer = AutoTokenizer.from_pretrained(args.tokenizer)
     tokenizer.eos_token = "<|endoftext|>"
@@ -55,6 +61,7 @@ if __name__ == "__main__":
     parser.add_argument("--optim", type=str, default="adamw_torch")
     parser.add_argument("--data_path", type=str, default="./data/ultrachat_small.jsonl")
     parser.add_argument("--num_epochs", type=int, default=1)
+    parser.add_argument("--gpu", type=int, default=0, help="GPU device ID")
     args = parser.parse_args()
 
     run(args)
