@@ -46,6 +46,7 @@ def run(args):
             save_steps=500,
         ),
         data_collator=data_module.data_collator,
+        device=device,
     )
 
     trainer.to(device)
