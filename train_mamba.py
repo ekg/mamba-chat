@@ -44,10 +44,11 @@ def run(args):
             output_dir="mamba-chat",
             logging_steps=50,
             save_steps=500,
-            device=device,
         ),
         data_collator=data_module.data_collator,
     )
+
+    trainer.to(device)
 
     trainer.train()
 
